@@ -13,7 +13,7 @@ RUN apk add bash \
             sudo
 
 RUN mkdir -p /etc/nginx/sites-enabled/
-COPY ./etc/nginx/sites-enabled/{{ domain }}.conf /etc/nginx/sites-enabled/{{ domain }}.conf
+COPY ./etc/nginx/sites-enabled/node.webdev.conf /etc/nginx/sites-enabled/{{ domain }}.conf
 
 RUN openssl req -x509 \
                 -nodes \
