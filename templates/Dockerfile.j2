@@ -37,7 +37,7 @@ RUN npm i -g pm2
 
 WORKDIR {{ node_app_dir }}
 
-COPY .{{ frontend_root_dir }}package.json .
+COPY .{{ node_app_dir }}package.json .
 RUN npm install
 
 RUN chown {{ user_name }}:{{ user_group }} ./node_modules
