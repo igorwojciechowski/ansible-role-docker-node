@@ -12,36 +12,24 @@ RUN apk add bash \
             build-base \
             sudo
 
-RUN mkdir -p /etc/nginx/sites-enabled/
-COPY ./etc/nginx/sites-enabled/node.webdev.conf /etc/nginx/sites-enabled/{{ domain }}.conf
-
-RUN openssl req -x509 \
-                -nodes \
-                -days 365 \
-                -newkey rsa:2048 \
-                -keyout /etc/ssl/private/{{ domain }}.key \
-                -out /etc/ssl/certs/{{ domain }}.crt \
-                -subj "/CN=Webdev/C=WD/ST=Webdev/L=Webdev/O=Webdev/OU=Webdev/"
-
-
-RUN addgroup --gid {{ group_gid }} {{ user_group }}
-RUN adduser  {{ user_name }} --uid {{ user_uid }}  -G {{ user_group }} --disabled-password
-RUN echo "{{ user_password }}:{{ user_password }}" | chpasswd
+RUN addgroup --gid {{ user.gid }} {{ user.group }}
+RUN adduser  {{ user.name }} --uid {{ user.uid }}  -G {{ user.group }} --disabled-password
+RUN echo "{{ user.password }}:{{ user.password }}" | chpasswd
 
 # --- Add user to sudoers
-RUN echo "{{ user_name }} ALL=(ALL) ALL" > /etc/sudoers.d/{{ user_name }}
-RUN chmod 0440 /etc/sudoers.d/{{ user_name }}
+RUN echo "{{ user.name }} ALL=(ALL) ALL" > /etc/sudoers.d/{{ user.name }}
+RUN chmod 0440 /etc/sudoers.d/{{ user.name }}
 RUN echo "Set disable_coredump false" >> /etc/sudo.conf
 
 RUN npm i -g pm2
 
-WORKDIR {{ node_app_dir }}
+WORKDIR {{ dir.node_app }}
 
-COPY .{{ node_app_dir }}package.json .
+COPY .{{ dir.node_app }}/package.json .
 RUN npm install
 
-RUN chown {{ user_name }}:{{ user_group }} ./node_modules
-USER {{ user_name }}
+RUN chown {{ user.name }}:{{ user.group }} ./node_modules
+USER {{ user.name }}
 
 EXPOSE 3000
 
