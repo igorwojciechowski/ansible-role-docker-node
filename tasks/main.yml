@@ -1,10 +1,12 @@
 - name: Create docker_node directory
   file:
-    path: "{{ user.home }}/docker/docker_node"
+    path: "{{ item }}"
     owner: "{{ user.name }}"
     group: docker
-    mode: 0550
+    mode: 0750
     state: directory
+  with_items:
+    - "{{ user.home }}/docker/docker_node{{ dir.node_app }}"
 
 - name: Copy Dockerfile
   template:
